@@ -319,12 +319,19 @@ func AddProvider(tag string, provider TaggedFunction) error {
 	return nil
 }
 
-func getValue(a interface{}) (reflect.Value, error) {
+func getValue(a interface{}) (val reflect.Value, err error) {
 	t := reflect.TypeOf(a)
 	if t == nil {
 		return reflect.Value{}, fmt.Errorf("interface{} not allowed")
 	}
 	k := t.Kind()
+	defer func() {
+		// recover from possible panics from reflect package
+		if r := recover(); r != nil {
+			val = reflect.Zero(t)
+			err = nil
+		}
+	}()
 
 	switch k {
 	case reflect.Ptr:
