@@ -475,7 +475,7 @@ func getValue(a interface{}) (reflect.Value, error) {
 func isZero(field reflect.Value) (bool, error) {
 	for _, kind := range []reflect.Kind{reflect.Struct, reflect.Slice, reflect.Array, reflect.Map} {
 		if kind == field.Kind() {
-			return false, fmt.Errorf("keep not allowed on struct")
+			return false, fmt.Errorf("keep not allowed on %s", kind.String())
 		}
 	}
 	return reflect.Zero(field.Type()).Interface() == field.Interface(), nil
